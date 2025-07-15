@@ -5,3 +5,10 @@ scikit-learn
 numpy
 nltk
 pandas
+Flask
+gunicorn
+joblib
+scikit-learn
+nltk
+pandas
+requests
