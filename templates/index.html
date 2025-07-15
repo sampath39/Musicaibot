@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Emotion-Based Music Bot</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: url('https://i.postimg.cc/cHNbL1z2/keyboard-is-shown-colorful-psychedelic-background-making-it-look-like-electric-organ-97167-27424.jpg') no-repeat center center fixed;
+      background-size: cover;
+      color: white;
+    }
+
+    header {
+      background: url('https://i.postimg.cc/MGy8DLJk/text-music-concept-by-generative-600nw-2306835259.webp') center/cover no-repeat;
+      color: white;
+      padding: 40px 20px;
+      position: relative;
+      text-align: center;
+    }
+
+    .logo {
+      position: absolute;
+      top: 15px;
+      left: 15px;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+    }
+
+    header h1 {
+      font-size: 2.2rem;
+      margin: 10px 0 5px;
+    }
+
+    header p {
+      margin: 0;
+      font-size: 1.1rem;
+    }
+
+    .chatbox {
+      background: #2b046b;
+      color: white;
+      width: 90%;
+      max-width: 500px;
+      margin: 40px auto;
+      padding: 20px;
+      border-radius: 12px;
+      height: 400px;
+      overflow-y: auto;
+      box-shadow: 0 0 12px rgba(0, 0, 0, 0.7);
+    }
+
+    .user-message, .bot-message {
+      margin: 10px 0;
+      padding: 10px;
+      border-radius: 6px;
+    }
+
+    .user-message {
+      background: #444;
+      text-align: right;
+    }
+
+    .bot-message {
+      background: #c99ff3;
+      text-align: left;
+    }
+
+    .input-wrapper {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 60px;
+    }
+
+    .user-message-input {
+      flex: 1;
+      max-width: 400px;
+      padding: 10px;
+      border: none;
+      border-radius: 6px;
+      margin-right: 10px;
+      background: #333;
+      color: white;
+    }
+
+    button {
+      padding: 10px 20px;
+      background: purple;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    footer {
+      background: url('https://i.postimg.cc/ZKyspdh2/360-F-250959105-KFS05-K9-HHels3c-K6n-Zc-ID63s1s-Ejci-Gn.jpg') center/cover no-repeat;
+      color: white;
+      text-align: center;
+      padding: 30px 10px;
+    }
+
+    footer a {
+      color: #fff;
+      margin: 0 15px;
+      text-decoration: none;
+    }
+
+    footer p {
+      margin: 8px 0;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <img src="https://i.postimg.cc/ZKyspdh2/360-F-250959105-KFS05-K9-HHels3c-K6n-Zc-ID63s1s-Ejci-Gn.jpg" class="logo" alt="logo">
+    <h1>🎵 Music Bot</h1>
+    <p>Fresh music makes you feel amazing</p>
+  </header>
+
+  <div class="chatbox" id="chatbox"></div>
+
+  <div class="input-wrapper">
+    <input type="text" id="userMessage" class="user-message-input" placeholder="Type a message..."/>
+    <button onclick="sendMessage()">Send</button>
+  </div>
+
+  <footer>
+    <div>
+      <a href="#">About</a> |
+      <a href="#">Contact</a> |
+      <a href="mailto:sampath777yt@gmail.com">Email</a>
+    </div>
+    <p>Register Numbers: 22FE1A6139, 22FE1A6140, 23FE1A5102, 22FE1A6112</p>
+    <p>&copy; 2025 Emotion Music AI</p>
+  </footer>
+
+  <script>
+    const chatbox = document.getElementById('chatbox');
+    const userMessageInput = document.getElementById('userMessage');
+
+    function sendMessage() {
+      const userMessage = userMessageInput.value.trim();
+      if (!userMessage) return;
+      chatbox.innerHTML += `<div class="user-message">${userMessage}</div>`;
+      userMessageInput.value = "";
+      detectEmotion(userMessage);
+    }
+
+    async function detectEmotion(text) {
+      try {
+        const res = await fetch('http://127.0.0.1:5000/predict', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ text })
+        });
+        const data = await res.json();
+        const emotion = data.emotion;
+
+        chatbox.innerHTML += `<div class="bot-message">You seem ${emotion}. Here's some music for your mood.</div>`;
+        getMusicRecommendations(emotion);
+        chatbox.scrollTop = chatbox.scrollHeight;
+      } catch (err) {
+        console.error('Error:', err);
+      }
+    }
+
+    async function getMusicRecommendations(emotion) {
+      const query = `${emotion} song`;
+      const youtubeLink = `https://www.youtube.com/results?search_query=${encodeURIComponent(query)}`;
+      const spotifyLink = `https://open.spotify.com/search/${encodeURIComponent(query)}`;
+
+      chatbox.innerHTML += `
+        <div class="bot-message">
+          🎬 <a href="${youtubeLink}" target="_blank">YouTube</a> | 
+          🎧 <a href="${spotifyLink}" target="_blank">Spotify</a>
+        </div>
+      `;
+    }
+  </script>
+</body>
+</html>
