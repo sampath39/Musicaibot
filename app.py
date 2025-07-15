@@ -21,7 +21,12 @@ def predict_emotion():
     text = data.get('text', '')
     if not model:
         return jsonify({'error': 'Model not found'}), 500
+
+    # Default to 'neutral' if no strong keywords are found and model returns uncertain value
     prediction = model.predict([text])[0]
+    if not prediction:
+        prediction = 'neutral'
+
     return jsonify({'emotion': prediction})
 
 if __name__ == '__main__':
