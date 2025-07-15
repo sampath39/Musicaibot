@@ -1,6 +1,7 @@
- Flask
+Flask
 requests
-
-jsonify
- render-template
 joblib
+scikit-learn
+numpy
+nltk
+pandas
